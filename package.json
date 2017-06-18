@@ -1,0 +1,14 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "actions-on-google": "^1.1.1",
+    "firebase-admin": "^4.2.1",
+    "firebase-functions": "^0.5.7",
+    "object-keys": "^1.0.11",
+    "random-item": "^1.0.0",
+    "random-number-in-range": "^1.0.0",
+    "shuffle-array": "^1.0.1"
+  },
+  "private": true
+}
