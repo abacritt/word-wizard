@@ -11,11 +11,13 @@ const ACTION_LEARN = 'learn';
 const ACTION_PRACTICE = "practice";
 const ACTION_PRACTICE_RANDOM = "practice.random";
 const HANDLE_ANSWER = "answer.selected";
+const TELL_MEANING = "meaning";
 
 let welcome = new (require('./welcome').welcome)();
 let learn = new (require('./learn').learn)(admin, words);
 let practice = new (require('./practice').practice)(admin, words);
 let answer = new (require('./answer').answer)(admin, words);
+let meaning = new (require('./meaning').meaning)(admin, words);
 
 exports.apiAiWebhook = functions.https.onRequest((request, response) => {
     const app = new App({ request, response });
@@ -27,6 +29,7 @@ exports.apiAiWebhook = functions.https.onRequest((request, response) => {
     actionMap.set(ACTION_PRACTICE, practice.handleRequest());
     actionMap.set(ACTION_PRACTICE_RANDOM, practice.handleRequest());
     actionMap.set(HANDLE_ANSWER, answer.handleRequest());
+    actionMap.set(TELL_MEANING, meaning.handleRequest());
 
     app.handleRequest(actionMap);
 });
