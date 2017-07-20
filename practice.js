@@ -15,41 +15,36 @@ let practice = function(admin, words) {
     this.words = words;
 }
 
-practice.prototype.handleRequest = function() {
-    let db = this.db;
-    let _this = this;
+practice.prototype.handleRequest = function(app) {
+    let user = app.getUser();
+    let userId = user.email ? user.email : user.userId;
 
-    return function(app) {
-        let user = app.getUser();
-        let userId = user.email ? user.email : user.userId;
+    this.db.ref('/users/' + userId + '/learned_words').once('value', (snapshot) => {
+        let learnedWords = snapshot.val();
 
-        db.ref('/users/' + userId + '/learned_words').once('value', (snapshot) => {
-            let learnedWords = snapshot.val();
+        if (app.getIntent() === "practice.random") {
+            learnedWords = keys(this.words);
+        }
 
-            if (app.getIntent() === "practice.random") {
-                learnedWords = keys(_this.words);
-            }
+        if (!learnedWords || learnedWords.length < MIN_LEARN_COUNT) {
+            app.ask(
+                app.buildRichResponse()
+                    .addSimpleResponse(random(noLearnedWords))
+                    .addSuggestions([
+                        "Learn a new word",
+                        "Test with random words"
+                    ])
+            );
+        } else {
+            let wordToAsk = random(learnedWords);
 
-            if (!learnedWords || learnedWords.length < MIN_LEARN_COUNT) {
-                app.ask(
-                    app.buildRichResponse()
-                        .addSimpleResponse(random(noLearnedWords))
-                        .addSuggestions([
-                            "Learn a new word",
-                            "Test with random words"
-                        ])
-                );
-            } else {
-                let wordToAsk = random(learnedWords);
-
-                app.askWithList(
-                    "What is the meaning of " + wordToAsk + "?",
-                    app.buildList(wordToAsk)
-                        .addItems(_this._buildOptionsArray(app, wordToAsk))
-                );
-            }
-        });
-    };
+            app.askWithList(
+                "What is the meaning of " + wordToAsk + "?",
+                app.buildList(wordToAsk)
+                    .addItems(this._buildOptionsArray(app, wordToAsk))
+            );
+        }
+    });
 };
 
 practice.prototype._buildOptionsArray = function (app, wordToAsk) {

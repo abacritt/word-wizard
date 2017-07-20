@@ -7,17 +7,15 @@ const WELCOME_STRINGS = [
     "Hello! Do you want to learn a new word? Or do you want to practice words you learned already?"
 ];
 
-welcome.prototype.handleRequest = function () {
-    return function (app) {
-        app.ask(
-            app.buildRichResponse()
-                .addSimpleResponse(random(WELCOME_STRINGS))
-                .addSuggestions([
-                    "Learn a new word",
-                    "Test learned words"
-                ])
-        );
-    }
+welcome.prototype.handleRequest = function (app) {
+    app.ask(
+        app.buildRichResponse()
+            .addSimpleResponse(random(WELCOME_STRINGS))
+            .addSuggestions([
+                "Learn a new word",
+                "Test learned words"
+            ])
+    );
 };
 
 exports.welcome = welcome;

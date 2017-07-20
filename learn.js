@@ -12,54 +12,45 @@ let learn = function (admin, words) {
     this.words = words;
 };
 
-learn.prototype.handleRequest = function () {
-    let db = this.db;
-    let words = this.words;
+learn.prototype.handleRequest = function (app) {
+    let user = app.getUser();
+    let userId = user.email ? user.email : user.userId;
 
-    return function(app) {
-        let user = app.getUser();
-        let userId = user.email ? user.email : user.userId;
+    this.db.ref('/users/' + userId + '/learned_words').once('value', (snapshot) => {
+        let learnedWords = snapshot.val();
 
-        db.ref('/users/' + userId + '/learned_words').once('value', (snapshot) => {
-            let learnedWords = snapshot.val();
+        if (!learnedWords) {
+            learnedWords = [];
+        }
 
-            if (!learnedWords) {
-                learnedWords = [];
-            }
+        let allWords = keys(this.words);
 
-            let allWords = keys(words);
+        let randomWord = random(allWords);
+        while (learnedWords.includes(randomWord) && learnedWords.length < allWords.length) {
+            randomWord = random(allWords);
+        }
 
-            let randomWord = random(allWords);
-            while (learnedWords.includes(randomWord) && learnedWords.length < allWords.length) {
-                randomWord = random(allWords);
-            }
+        learnedWords.push(randomWord);
 
-            learnedWords.push(randomWord);
+        this.db.ref('/users/' + userId + '/learned_words').set(learnedWords);
 
-            db.ref('/users/' + userId + '/learned_words').set(learnedWords);
+        let randomPrelude = preludes[Math.floor(preludes.length * Math.random())];
 
-            let randomPrelude = preludes[Math.floor(preludes.length * Math.random())];
-
-            if (app.hasSurfaceCapability(app.SurfaceCapabilities.SCREEN_OUTPUT)) {
-                app.ask(
-                    app.buildRichResponse()
-                        .addSimpleResponse(randomPrelude + randomWord)
-                        .addBasicCard(
-                        app.buildBasicCard()
-                            .setTitle(randomWord)
-                            .setSubtitle(words[randomWord].pos)
-                            .setBodyText(words[randomWord].meaning)
-                        )
-                        .addSuggestions([
-                            "Learn another word",
-                            "Test learned words"
-                        ])
-                );
-            } else {
-                app.ask("<speak>" + randomPrelude + randomWord + "</speak>");
-            }
-        });
-    };
+        app.ask(
+            app.buildRichResponse()
+                .addSimpleResponse(randomPrelude + randomWord)
+                .addBasicCard(
+                app.buildBasicCard()
+                    .setTitle(randomWord)
+                    .setSubtitle(this.words[randomWord].pos)
+                    .setBodyText(this.words[randomWord].meaning)
+                )
+                .addSuggestions([
+                    "Learn another word",
+                    "Test learned words"
+                ])
+        );
+    });
 };
 
 exports.learn = learn;
