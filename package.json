@@ -1,13 +1,13 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase",
+  "description": "A simple chatbot for Actions on Google that helps to learn and memorize new English words.",
   "dependencies": {
-    "actions-on-google": "^1.1.1",
-    "firebase-admin": "^4.2.1",
-    "firebase-functions": "^0.5.7",
-    "object-keys": "^1.0.11",
-    "random-item": "^1.0.0",
-    "random-number-in-range": "^1.0.0",
+    "actions-on-google": "^2.14.0",
+    "firebase-admin": "^9.11.0",
+    "firebase-functions": "^3.14.1",
+    "object-keys": "^1.1.1",
+    "random-item": "^4.0.1",
+    "random-number-in-range": "^1.0.2",
     "shuffle-array": "^1.0.1"
   },
   "private": true
