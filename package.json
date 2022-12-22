@@ -3,7 +3,7 @@
   "description": "A simple chatbot for Actions on Google that helps to learn and memorize new English words.",
   "dependencies": {
     "actions-on-google": "^2.14.0",
-    "firebase-admin": "^9.11.0",
+    "firebase-admin": "^11.4.1",
     "firebase-functions": "^3.14.1",
     "object-keys": "^1.1.1",
     "random-item": "^4.0.1",
